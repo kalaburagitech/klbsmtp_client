@@ -24,8 +24,21 @@ export default function LoginPage() {
       notify("Admin login successful");
       router.push("/dashboard");
     } catch (err) {
-      setError(err?.response?.data?.message || "Request failed");
-      notify(err?.response?.data?.message || "Login failed", "error");
+      const res = err?.response;
+      const data = res?.data;
+      let msg = "Login failed";
+      if (data?.code === "DATABASE_UNAVAILABLE") {
+        msg =
+          "The API cannot reach the database. Fix DATABASE_URL on the server (local .env or your host’s Postgres connection string).";
+      } else if (res?.status === 401) {
+        msg = data?.message || "Invalid email or password";
+      } else if (res?.status === 503) {
+        msg = data?.message || "Service temporarily unavailable. Try again later.";
+      } else {
+        msg = data?.message || err?.message || "Request failed";
+      }
+      setError(msg);
+      notify(msg, "error");
     } finally {
       setLoading(false);
     }
