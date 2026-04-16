@@ -5,7 +5,7 @@ import api from "../../lib/api";
 import { useToast } from "../../components/ToastProvider";
 
 export default function DashboardPage() {
-  const [stats, setStats] = useState({ totalOrgs: 0, emailsSentToday: 0 });
+  const [stats, setStats] = useState({ totalOrgs: 0, blockedOrgs: 0, emailsSentToday: 0 });
   const { notify } = useToast();
 
   useEffect(() => {
@@ -18,8 +18,9 @@ export default function DashboardPage() {
   return (
     <main className="mx-auto max-w-5xl p-8">
       <h1 className="text-3xl font-semibold">Dashboard Overview</h1>
-      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         <StatCard title="Total Organizations" value={stats.totalOrgs} />
+        <StatCard title="Blocked Organizations" value={stats.blockedOrgs} />
         <StatCard title="Emails Sent Today" value={stats.emailsSentToday} />
       </div>
       <p className="mt-6 text-sm text-slate-300">Create organizations, assign API keys, and monitor delivery from the sidebar.</p>

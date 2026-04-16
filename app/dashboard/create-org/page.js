@@ -5,7 +5,13 @@ import api from "../../../lib/api";
 import { useToast } from "../../../components/ToastProvider";
 
 export default function CreateOrganizationPage() {
-  const [form, setForm] = useState({ name: "", dailyLimit: 100, status: "active" });
+  const [form, setForm] = useState({
+    name: "",
+    contactName: "",
+    contactEmail: "",
+    dailyLimit: 100,
+    status: "active"
+  });
   const [created, setCreated] = useState(null);
   const { notify } = useToast();
 
@@ -15,16 +21,22 @@ export default function CreateOrganizationPage() {
       notify("Organization name is required", "error");
       return;
     }
+    if (!form.contactName.trim() || !form.contactEmail.trim()) {
+      notify("Contact name and email are required", "error");
+      return;
+    }
 
     try {
       const { data } = await api.post("/admin/create-org", {
         name: form.name.trim(),
+        contactName: form.contactName.trim(),
+        contactEmail: form.contactEmail.trim().toLowerCase(),
         dailyLimit: Number(form.dailyLimit) || 100,
         status: form.status
       });
       setCreated(data);
       notify("Organization created successfully");
-      setForm({ name: "", dailyLimit: 100, status: "active" });
+      setForm({ name: "", contactName: "", contactEmail: "", dailyLimit: 100, status: "active" });
     } catch (error) {
       notify(error?.response?.data?.message || "Failed to create organization", "error");
     }
@@ -39,6 +51,21 @@ export default function CreateOrganizationPage() {
           placeholder="Organization name"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
+          required
+        />
+        <input
+          className="w-full rounded bg-slate-800 p-2"
+          placeholder="Contact person name"
+          value={form.contactName}
+          onChange={(e) => setForm({ ...form, contactName: e.target.value })}
+          required
+        />
+        <input
+          className="w-full rounded bg-slate-800 p-2"
+          placeholder="contact@company.com"
+          type="email"
+          value={form.contactEmail}
+          onChange={(e) => setForm({ ...form, contactEmail: e.target.value })}
           required
         />
         <input
@@ -64,6 +91,7 @@ export default function CreateOrganizationPage() {
       {created && (
         <div className="mt-5 rounded-lg border border-emerald-700 bg-emerald-950 p-4 text-sm">
           <p>Organization created: {created.name}</p>
+          <p className="mt-1">Contact: {created.contactName} ({created.contactEmail})</p>
           <p className="mt-1 break-all">API key: {created.apiKey}</p>
         </div>
       )}
