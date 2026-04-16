@@ -90,6 +90,7 @@ export default function OrganizationsPage() {
               <th className="p-3">Status</th>
               <th className="p-3">Usage State</th>
               <th className="p-3">Daily Limit</th>
+              <th className="p-3">Sent Today</th>
               <th className="p-3">API Key</th>
               <th className="p-3">Action</th>
             </tr>
@@ -113,6 +114,7 @@ export default function OrganizationsPage() {
                   )}
                 </td>
                 <td className="p-3">{org.dailyLimit}</td>
+                <td className="p-3">{org.sentToday ?? 0}</td>
                 <td className="p-3">
                   <div className="flex items-center gap-2">
                     <span className="inline-block max-w-[220px] truncate align-middle">{org.apiKey}</span>
@@ -158,7 +160,7 @@ export default function OrganizationsPage() {
             ))}
             {orgs.length === 0 && (
               <tr>
-                <td className="p-4 text-slate-300" colSpan={7}>
+                <td className="p-4 text-slate-300" colSpan={8}>
                   No organizations yet.
                 </td>
               </tr>
